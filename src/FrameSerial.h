@@ -1,10 +1,13 @@
 #ifndef __FRAME_SERIAL_H__
 #define __FRAME_SERIAL_H__
 
-#include "PacketSerial.h"
+#include <FastCRC.h>
+#include <PacketSerial.h>
 
 #define HEADER_SIZE (4)
 #define CRC32_SIZE (4)
+
+FastCRC32 CRC32;
 
 struct frame_s
 {
@@ -35,7 +38,7 @@ public:
         memcpy(framed_buf + HEADER_SIZE, buffer, size);
 
         // Compute CRC32
-        uint32_t crc32 = 0xDEADBEEF; // TODO(jott): compute
+        uint32_t crc32 = CRC32.crc32(framed_buf, HEADER_SIZE + size);
 
         // Place at end of buffer, little endian
         framed_buf[HEADER_SIZE + size + 0] = crc32 & 0xFF;
@@ -57,9 +60,9 @@ public:
                 (buf[len - 1] << 24)
             );
 
-        uint32_t crc = 0xDEADBEEF; // TODO(jott): compute
+        uint32_t crc32 = CRC32.crc32(buf, len - 4);
 
-        if (packet_crc32 != crc)
+        if (packet_crc32 != crc32)
         {
             return false; // Invalid CRC32
         }
