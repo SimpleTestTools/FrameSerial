@@ -7,6 +7,6 @@ setup(
     packages=find_packages(where="py"),
     use_scm_version=True,
     setup_requires=["setuptools_scm"],
-    install_requires=["pyserial"],
+    install_requires=["cobs", "pyserial"],
     extras_require={"dev": ["black"],},
 )
