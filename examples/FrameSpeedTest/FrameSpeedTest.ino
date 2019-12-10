@@ -26,7 +26,6 @@ void setup()
 {
     // FrameSerial wraps Serial by default
     s.begin(115200);
-
     s.setPacketHandler(&handlePacket);
 
 #if defined(LED_DBG_PIN)
@@ -89,6 +88,9 @@ void handlePacket(const uint8_t *buf, size_t len)
 
 void loop()
 {
+    // Service the serial connection
+    s.update();
+
 #if defined(LED_DBG_PIN)
     digitalWrite(LED_DBG_PIN, test_running);
 #endif
